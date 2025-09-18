@@ -1,13 +1,12 @@
-package model;
+package io.github.antoniasousa.icompra.clientes.model;
 
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.Data;
 
 @Entity
 @Table(name= "clientes")
 @Data
-public class Clientes {
+public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +27,7 @@ public class Clientes {
     @Column (name = "bairro", length = 150)
     private String bairro;
 
-    @Column (name = "emai", length = 150)
+    @Column (name = "email", length = 150)
     private String email;
 
     @Column (name = "telefone", length = 20)

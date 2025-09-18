@@ -1,0 +1,11 @@
+package io.github.antoniasousa.icompras.pedidos.controller.mappers;
+
+import io.github.antoniasousa.icompras.pedidos.controller.dto.ItemPedidoDTO;
+import io.github.antoniasousa.icompras.pedidos.model.ItemPedido;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface ItemPedidoMapper {
+
+    ItemPedido map(ItemPedidoDTO dto);
+}

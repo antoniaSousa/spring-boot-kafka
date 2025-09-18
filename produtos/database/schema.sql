@@ -26,7 +26,7 @@ create table pedido
     chave_pagamento text,
     observacoes     text,
     status          varchar(20) check ( status in ('REALIZADO', 'PAGO', 'FATURADO', 'ENVIADO', 'ERRO_PAGAMENTO','PREPARANDO_ENVIO')),
-    toral decimal (16, 2),
+    total decimal (16, 2),
     codigo_rastreio varchar(255),
     url_nf text);
 -- item_pedido
