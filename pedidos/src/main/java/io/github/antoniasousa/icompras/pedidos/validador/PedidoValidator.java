@@ -5,6 +5,7 @@ import io.github.antoniasousa.icompras.pedidos.client.ClientesClient;
 import io.github.antoniasousa.icompras.pedidos.client.ProdutoClient;
 import io.github.antoniasousa.icompras.pedidos.client.representation.ClienteRepresentation;
 import io.github.antoniasousa.icompras.pedidos.client.representation.ProdutoRepresentation;
+import io.github.antoniasousa.icompras.pedidos.exception.ValidationException;
 import io.github.antoniasousa.icompras.pedidos.model.ItemPedido;
 import io.github.antoniasousa.icompras.pedidos.model.Pedido;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public class PedidoValidator {
            ClienteRepresentation cliente = response.getBody();
            log.info("Cliente de codigo: {} encontrado: {}", cliente.codigo(), cliente.nome());
        } catch (FeignException.NotFound e){
-           log.error("Cliente não encontrado");
+           var message = String.format("Cliente de código %d encontrado", codigoCliente);
+           throw new ValidationException("codigoCliente", message);
        }
     }
     private void validarItem(ItemPedido item) {
@@ -41,7 +43,8 @@ public class PedidoValidator {
             ProdutoRepresentation produto = response.getBody();
             log.info("Produto de codigo {} encontrado: {}", produto.codigo(), produto.nome());
         }catch (FeignException.NotFound e){
-            log.error("Produto não encontrado");
+            var message = String.format("Produto de código %d encontrado", item.getCodigoProduto());
+            throw new ValidationException("codigoProduto", message);
         }
     }
 }

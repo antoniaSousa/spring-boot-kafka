@@ -15,13 +15,13 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PedidoMapper {
 
-    ItemPedidoMapper ITEM_PEDIDP_MAPPER = Mappers.getMapper(ItemPedidoMapper.class);
+    ItemPedidoMapper ITEM_PEDIDO_MAPPER = Mappers.getMapper(ItemPedidoMapper.class);
     @Mapping(source = "itens", target = "itens", qualifiedByName = "mapItens")
     Pedido map(NovoPedidoDTO dto);
 
     @Named("mapItens")
     default List<ItemPedido> mapItens(List<ItemPedidoDTO> dtos) {
-        return dtos.stream().map(ITEM_PEDIDP_MAPPER::map).toList();
+        return dtos.stream().map(ITEM_PEDIDO_MAPPER::map).toList();
 
     }
     @AfterMapping
