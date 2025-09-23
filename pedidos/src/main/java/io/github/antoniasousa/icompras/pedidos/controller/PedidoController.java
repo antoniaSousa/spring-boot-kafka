@@ -20,12 +20,12 @@ public class PedidoController {
     private final PedidoService service;
     private final PedidoMapper mapper;
 
-   @PostMapping
+   @PostMapping("/")
    public ResponseEntity <Object> criar (@RequestBody NovoPedidoDTO dto) {
        try {
            var pedido = mapper.map(dto);
            var novoPedido = service.criarPedido(pedido);
-           return ResponseEntity.ok().body(novoPedido);
+           return ResponseEntity.ok().body(novoPedido.getCodigo());
        }catch (ValidationException e){
         var erro = new ErroResposta( "Erro validação", e.getField(), e.getMessage());
         return ResponseEntity.badRequest().body(erro);
