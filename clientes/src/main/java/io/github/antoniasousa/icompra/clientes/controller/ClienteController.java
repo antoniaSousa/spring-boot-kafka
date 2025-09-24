@@ -5,10 +5,7 @@ import io.github.antoniasousa.icompra.clientes.service.ClienteService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("clientes")
@@ -21,5 +18,13 @@ public class ClienteController {
     public ResponseEntity<Cliente> salvar(@RequestBody Cliente cliente) {
         service.salvar(cliente);
         return ResponseEntity.ok(cliente);
+    }
+    @GetMapping("{codigo}")
+    public ResponseEntity<Cliente> obterDados(@PathVariable("codigo") Long codigo) {
+        return  service
+                .obterPorCodigo(codigo)
+                .map(ResponseEntity::ok)
+                .orElseGet(()-> ResponseEntity.notFound().build());
+
     }
 }

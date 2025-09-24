@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "clientes", url = "${icompras.pedidos.clients.clientes.url}")
 public interface ClientesClient {
 
-    @GetMapping({"codigo"})
+    @GetMapping("{codigo}")
     ResponseEntity<ClienteRepresentation> obterDados(@PathVariable("codigo") Long codigo);
 }

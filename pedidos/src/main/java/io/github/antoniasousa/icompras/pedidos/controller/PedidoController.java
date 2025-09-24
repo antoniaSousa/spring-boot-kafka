@@ -20,8 +20,8 @@ public class PedidoController {
     private final PedidoService service;
     private final PedidoMapper mapper;
 
-   @PostMapping("/")
-   public ResponseEntity <Object> criar (@RequestBody NovoPedidoDTO dto) {
+   @PostMapping
+   public ResponseEntity <Object> criar(@RequestBody NovoPedidoDTO dto) {
        try {
            var pedido = mapper.map(dto);
            var novoPedido = service.criarPedido(pedido);

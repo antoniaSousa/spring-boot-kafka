@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "produtos", url = "${icompras.pedidos.clients.produtos.url}")
 public interface ProdutoClient {
 
-    @GetMapping({"codigo"})
+    @GetMapping("{codigo}")
     ResponseEntity<ProdutoRepresentation> obterDados(@RequestParam("codigo") Long codigo);
 }
