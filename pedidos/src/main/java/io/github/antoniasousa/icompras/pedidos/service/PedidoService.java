@@ -1,16 +1,19 @@
 package io.github.antoniasousa.icompras.pedidos.service;
 
 import io.github.antoniasousa.icompras.pedidos.model.Pedido;
+import io.github.antoniasousa.icompras.pedidos.model.StatusPedido;
 import io.github.antoniasousa.icompras.pedidos.repository.ItemPedidoRepository;
 import io.github.antoniasousa.icompras.pedidos.repository.PedidoRepository;
 import io.github.antoniasousa.icompras.pedidos.validador.PedidoValidator;
 import io.github.antoniasousa.icompras.pedidos.client.ServicoBancarioClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PedidoService {
 
@@ -34,7 +37,31 @@ public class PedidoService {
     }
 
     private void realizarPersistencia(Pedido pedido) {
-        validator.validar(pedido);
+//        validator.validar(pedido);
         repository.save(pedido);
+        itemPedidoRepository.saveAll(pedido.getItens());
+    }
+    public void ataualizarStatusPagamento(
+            Long codigoPedido, String chavePagamento, boolean sucesso, String observacoes) {
+
+            var pedidoEncontrado = repository
+                    .findByCodigoAndChavePagamento(codigoPedido, chavePagamento);
+
+            if (pedidoEncontrado.isEmpty()) {
+                var msg = String.format("Pedido não encontrado para o código %d e chave de pagamento %s",
+                        codigoPedido, chavePagamento);
+                log.error(msg);
+                return;
+            }
+
+            Pedido pedido = pedidoEncontrado.get();
+
+            if (sucesso) {
+                pedido.setStatus(StatusPedido.PAGO);
+            }else {
+                pedido.setStatus(StatusPedido.ERRO_PAGAMENTO);
+                pedido.setChavePagamento(observacoes);
+            }
+            repository.save(pedido);
     }
 }
