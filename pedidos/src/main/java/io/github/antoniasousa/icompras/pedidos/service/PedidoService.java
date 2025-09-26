@@ -1,7 +1,10 @@
 package io.github.antoniasousa.icompras.pedidos.service;
 
+import io.github.antoniasousa.icompras.pedidos.exception.ItemNaoEcontradoException;
+import io.github.antoniasousa.icompras.pedidos.model.DadosPagamento;
 import io.github.antoniasousa.icompras.pedidos.model.Pedido;
 import io.github.antoniasousa.icompras.pedidos.model.StatusPedido;
+import io.github.antoniasousa.icompras.pedidos.model.TipoPagamento;
 import io.github.antoniasousa.icompras.pedidos.repository.ItemPedidoRepository;
 import io.github.antoniasousa.icompras.pedidos.repository.PedidoRepository;
 import io.github.antoniasousa.icompras.pedidos.validador.PedidoValidator;
@@ -37,7 +40,6 @@ public class PedidoService {
     }
 
     private void realizarPersistencia(Pedido pedido) {
-//        validator.validar(pedido);
         repository.save(pedido);
         itemPedidoRepository.saveAll(pedido.getItens());
     }
@@ -64,4 +66,23 @@ public class PedidoService {
             }
             repository.save(pedido);
     }
+    @Transactional
+    public void adicionarNovoPagamento(
+            Long codigoPedido, String dadosCartao, TipoPagamento tipo) {
+       var pedidoEncontrado = repository.findById(codigoPedido);
+
+       if (pedidoEncontrado.isEmpty()) {
+           throw new ItemNaoEcontradoException("Pedido não encontrado para o código informado.");
+       }
+
+       var pedido = pedidoEncontrado.get();
+        DadosPagamento dadosPagamento = new DadosPagamento();
+        dadosPagamento.setTipoPagamento(tipo);
+        dadosPagamento.setDados(dadosCartao);
+
+        pedido.setDadosPagamento(dadosPagamento);
+        pedido.setStatus(StatusPedido.REALIZADO);
+        pedido.setObservacoes("Novo Pagamento realizado, aguardando pagamento");
+    }
+
 }

@@ -1,7 +1,9 @@
 package io.github.antoniasousa.icompras.pedidos.controller;
 
+import io.github.antoniasousa.icompras.pedidos.controller.dto.AdicaoNovoPagamentoDTO;
 import io.github.antoniasousa.icompras.pedidos.controller.dto.NovoPedidoDTO;
 import io.github.antoniasousa.icompras.pedidos.controller.mappers.PedidoMapper;
+import io.github.antoniasousa.icompras.pedidos.exception.ItemNaoEcontradoException;
 import io.github.antoniasousa.icompras.pedidos.exception.ValidationException;
 import io.github.antoniasousa.icompras.pedidos.model.ErroResposta;
 import io.github.antoniasousa.icompras.pedidos.service.PedidoService;
@@ -21,24 +23,28 @@ public class PedidoController {
     private final PedidoService service;
     private final PedidoMapper mapper;
 
-   @PostMapping
-   public ResponseEntity <Object> criar(@RequestBody NovoPedidoDTO dto, PushBuilder pushBuilder) {
-       try {
-           var pedido = mapper.map(dto);
-           var novoPedido = service.criarPedido(pedido);
-           return ResponseEntity.ok().body(novoPedido.getCodigo());
-       } catch (ValidationException e) {
-           var erro = new ErroResposta("Erro validação", e.getField(), e.getMessage());
-           return ResponseEntity.badRequest().body(erro);
-       }
-   }
-//       @PostMapping("pagamentos")
-//       public ResponseEntity<Object> adicionarNovoPagamento(
-//               @RequestBody AdicionarNovoPagamentoDTO dto){
-//                   service.adicionarNovoPagamento(dto.codigoPedido(), dto.dados(), dto.tipoPagamento());
-//                   return ResponseEntity.noContent().build();
-//
-//       }
-
+    @PostMapping
+    public ResponseEntity<Object> criar(@RequestBody NovoPedidoDTO dto, PushBuilder pushBuilder) {
+        try {
+            var pedido = mapper.map(dto);
+            var novoPedido = service.criarPedido(pedido);
+            return ResponseEntity.ok().body(novoPedido.getCodigo());
+        } catch (ValidationException e) {
+            var erro = new ErroResposta("Erro validação", e.getField(), e.getMessage());
+            return ResponseEntity.badRequest().body(erro);
+        }
     }
 
+    @PostMapping("pagamentos")
+    public ResponseEntity<Object> adicionarNovoPagamento(
+            @RequestBody AdicaoNovoPagamentoDTO dto) {
+        try {
+            service.adicionarNovoPagamento(dto.codigoPedido(), dto.dadosCartao(), dto.tipo());
+            return ResponseEntity.noContent().build();
+        } catch (ItemNaoEcontradoException e) {
+            var erro = new ErroResposta("Item não encontrado", "codigoPedido", e.getMessage());
+            return ResponseEntity.badRequest().body(erro);
+        }
+
+    }
+}

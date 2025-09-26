@@ -49,4 +49,6 @@ public class Pedido {
     private List<ItemPedido> itens;
 
 
+    public void setDadosPagamento(DadosPagamento dadosPagamento) {
+    }
 }
