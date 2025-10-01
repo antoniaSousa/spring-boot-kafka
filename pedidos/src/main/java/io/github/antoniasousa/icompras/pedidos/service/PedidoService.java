@@ -83,6 +83,11 @@ public class PedidoService {
         pedido.setDadosPagamento(dadosPagamento);
         pedido.setStatus(StatusPedido.REALIZADO);
         pedido.setObservacoes("Novo Pagamento realizado, aguardando pagamento");
+
+        String novaChavePagamento = servicoBancarioClient.solicitarPagamento(pedido);
+        pedido.setChavePagamento(novaChavePagamento);
+
+        repository.save(pedido);
     }
 
 }
