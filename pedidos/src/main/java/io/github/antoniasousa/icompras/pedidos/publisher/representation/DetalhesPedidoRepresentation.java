@@ -1,7 +1,6 @@
-package io.github.antoniasousa.icompras.pedidos.publisher;
+package io.github.antoniasousa.icompras.pedidos.publisher.representation;
 
 import io.github.antoniasousa.icompras.pedidos.model.StatusPedido;
-import io.github.antoniasousa.icompras.pedidos.publisher.representation.DetalheItensRepresentation;
 
 
 import java.math.BigDecimal;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public record DetalhesPedidoRepresentation(
         Long codigo,
-        Long codigoPedido,
+        Long codigoCliente,
         String nome,
         String cpf,
         String logradouro,

@@ -1,6 +1,7 @@
 package io.github.antoniasousa.icompras.pedidos.model;
 
 import io.github.antoniasousa.icompras.pedidos.controller.dto.DadosPagamentoDTO;
+import io.github.antoniasousa.icompras.pedidos.publisher.representation.DadosClientesRepresentations;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,9 @@ public class Pedido {
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens;
+
+    @Transient
+    private DadosClientesRepresentations dadosClientes;
 
 
     public void setDadosPagamento(DadosPagamento dadosPagamento) {
