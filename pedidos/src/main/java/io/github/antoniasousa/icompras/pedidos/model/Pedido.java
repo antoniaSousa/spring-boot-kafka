@@ -35,7 +35,7 @@ public class Pedido {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusPedido status;
+    private StatusPedido statusPedido;
 
     @Column(name = "codigo_rastreio")
     private Long codigoRastreio;

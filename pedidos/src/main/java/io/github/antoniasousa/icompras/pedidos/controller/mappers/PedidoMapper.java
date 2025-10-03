@@ -26,7 +26,7 @@ public interface PedidoMapper {
     }
     @AfterMapping
     default void afterMapping(@MappingTarget Pedido pedido) {
-        pedido.setStatus(StatusPedido.REALIZADO);
+        pedido.setStatusPedido(StatusPedido.REALIZADO);
         pedido.setDataPedido(LocalDateTime.now());
 
         var total = calcularTotal(pedido);

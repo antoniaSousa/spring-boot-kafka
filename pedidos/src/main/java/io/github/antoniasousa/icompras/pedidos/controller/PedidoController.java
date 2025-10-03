@@ -6,14 +6,13 @@ import io.github.antoniasousa.icompras.pedidos.controller.mappers.PedidoMapper;
 import io.github.antoniasousa.icompras.pedidos.exception.ItemNaoEcontradoException;
 import io.github.antoniasousa.icompras.pedidos.exception.ValidationException;
 import io.github.antoniasousa.icompras.pedidos.model.ErroResposta;
+import io.github.antoniasousa.icompras.pedidos.publisher.DetalhePedidoMapper;
+import io.github.antoniasousa.icompras.pedidos.publisher.representation.DetalhesPedidoRepresentation;
 import io.github.antoniasousa.icompras.pedidos.service.PedidoService;
 import jakarta.servlet.http.PushBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("pedidos")
@@ -22,6 +21,7 @@ public class PedidoController {
 
     private final PedidoService service;
     private final PedidoMapper mapper;
+    private final DetalhePedidoMapper detalhePedidoMapper;
 
     @PostMapping
     public ResponseEntity<Object> criar(@RequestBody NovoPedidoDTO dto, PushBuilder pushBuilder) {
@@ -47,4 +47,17 @@ public class PedidoController {
         }
 
     }
+    @PostMapping("{codigo}")
+
+    public ResponseEntity<DetalhesPedidoRepresentation> obterDetalhesPedido(
+            @PathVariable("codigo") Long codigo, DetalhePedidoMapper detalhePedidoMapper){
+        return service
+                .carregarDadosCompletosPedido(codigo)
+                .map(detalhePedidoMapper::map)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
+
 }
