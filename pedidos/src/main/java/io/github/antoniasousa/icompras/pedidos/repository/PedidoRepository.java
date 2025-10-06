@@ -7,8 +7,4 @@ import java.util.Optional;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
    Optional<Pedido> findByCodigoAndChavePagamento(Long codigo, String chavePagamento);
-
-    void carregarDadosCliente( Pedido pedido);
-
-    void carregarItensPedido(Pedido pedido);
 }

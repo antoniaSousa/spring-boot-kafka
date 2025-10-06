@@ -1,11 +1,12 @@
 package io.github.antoniasousa.icompras.pedidos.service;
 
+import io.github.antoniasousa.icompras.pedidos.client.ClientesClient;
+import io.github.antoniasousa.icompras.pedidos.client.ProdutoClient;
 import io.github.antoniasousa.icompras.pedidos.exception.ItemNaoEcontradoException;
 import io.github.antoniasousa.icompras.pedidos.model.*;
 import io.github.antoniasousa.icompras.pedidos.publisher.PagamentoPublisher;
 import io.github.antoniasousa.icompras.pedidos.repository.ItemPedidoRepository;
 import io.github.antoniasousa.icompras.pedidos.repository.PedidoRepository;
-import io.github.antoniasousa.icompras.pedidos.validador.PedidoValidator;
 import io.github.antoniasousa.icompras.pedidos.client.ServicoBancarioClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,10 @@ public class PedidoService {
 
     private final PedidoRepository repository;
     private final ItemPedidoRepository itemPedidoRepository;
-    private final PedidoValidator validator;
     private final ServicoBancarioClient servicoBancarioClient;
     private final PagamentoPublisher pagamentoPublisher;
+    private final ClientesClient apiClientes;
+    private final ProdutoClient apiProdutos;
 
 
     @Transactional
@@ -43,24 +45,16 @@ public class PedidoService {
 
     public Optional<Pedido> carregarDadosCompletosPedido(Long codigo ) {
         Optional<Pedido> pedido = repository.findById(codigo);
-        pedido.ifPresent(repository::carregarDadosCliente);
-        pedido.ifPresent(repository::carregarItensPedido);
+        pedido.ifPresent(this::carregarDadosCliente);
+        pedido.ifPresent(this::carregarItensPedido);
         return pedido;
     }
-
-    private void carregarDadosProduto(ItemPedido itemPedido) {
-        Long codigoPedido = itemPedido.getCodigo();
-        var response = apiProdutos.obterDados(codigoProduto);
-        itemPedido.setNome(response.getBody().nome());
-    }
-
     private void carregarDadosCliente(Pedido pedido) {
         Long codigoCliente = pedido.getCodigoCliente();
         var response = apiClientes.obterDados(codigoCliente);
         pedido.setDadosClientes(response.getBody());
 
     }
-
     private void carregarItensPedido(Pedido pedido) {
         List<ItemPedido> itens = itemPedidoRepository.findByPedido(pedido);
         pedido.setItens(itens);
@@ -68,6 +62,11 @@ public class PedidoService {
 
     }
 
+    private void carregarDadosProduto(ItemPedido itemPedido) {
+        Long codigoPedido = itemPedido.getCodigo();
+        var response = apiProdutos.obterDados(codigoPedido);
+        itemPedido.setNome(response.getBody().nome());
+    }
     private void realizarPersistencia(Pedido pedido) {
         repository.save(pedido);
         itemPedidoRepository.saveAll(pedido.getItens());
@@ -88,7 +87,7 @@ public class PedidoService {
             Pedido pedido = pedidoEncontrado.get();
 
             if (sucesso) {
-                pedido.setStatusPedido(StatusPedido.PAGO);
+                prepararEPublicarPedidoPago(pedido);
             }else {
                 pedido.setStatusPedido(StatusPedido.ERRO_PAGAMENTO);
                 pedido.setChavePagamento(observacoes);
@@ -109,7 +108,7 @@ public class PedidoService {
         dadosPagamento.setTipoPagamento(tipo);
         dadosPagamento.setDados(dadosCartao);
 
-        pedido.setDadosPagamento(dadosPagamento);
+        pedido.setDadosPagamento(pedido.getDadosPagamento());
         pedido.setStatusPedido(StatusPedido.REALIZADO);
         pedido.setObservacoes("Novo Pagamento realizado, aguardando pagamento");
 
@@ -118,7 +117,7 @@ public class PedidoService {
 
         repository.save(pedido);
     }
-    public void prepararEPublicarPedido(Pedido pedido) {
+    public void prepararEPublicarPedidoPago(Pedido pedido) {
        pedido.setStatusPedido(StatusPedido.PAGO);
        pedido.setDataPedido(pedido.getDataPedido());
        carregarDadosCliente(pedido);

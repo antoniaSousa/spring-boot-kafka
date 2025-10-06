@@ -23,7 +23,7 @@ public class PagamentoPublisher {
     private String topico;
 
     public void publicar(Pedido pedido) {
-        log.info("Publishing pagamento pedido: {}", pedido.getCodigo());
+        log.info("Publicando pedido pago {}", pedido.getCodigo());
 
         try {
             var representation = mapper.map(pedido);

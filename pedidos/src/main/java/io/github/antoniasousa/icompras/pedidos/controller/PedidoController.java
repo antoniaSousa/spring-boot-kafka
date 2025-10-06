@@ -48,9 +48,8 @@ public class PedidoController {
 
     }
     @PostMapping("{codigo}")
-
     public ResponseEntity<DetalhesPedidoRepresentation> obterDetalhesPedido(
-            @PathVariable("codigo") Long codigo, DetalhePedidoMapper detalhePedidoMapper){
+            @PathVariable("codigo") Long codigo){
         return service
                 .carregarDadosCompletosPedido(codigo)
                 .map(detalhePedidoMapper::map)

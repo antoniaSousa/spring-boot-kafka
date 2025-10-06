@@ -1,5 +1,6 @@
 package io.github.antoniasousa.icompras.pedidos.model;
 
+import io.github.antoniasousa.icompras.pedidos.client.representation.ClienteRepresentation;
 import io.github.antoniasousa.icompras.pedidos.controller.dto.DadosPagamentoDTO;
 import io.github.antoniasousa.icompras.pedidos.publisher.representation.DadosClientesRepresentations;
 import jakarta.persistence.*;
@@ -44,15 +45,11 @@ public class Pedido {
     private String urlNotaFiscal;
 
     @Transient
-    private DadosPagamentoDTO dadosPagamentoDTO;
+    private DadosPagamentoDTO dadosPagamento;
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens;
 
     @Transient
-    private DadosClientesRepresentations dadosClientes;
-
-
-    public void setDadosPagamento(DadosPagamento dadosPagamento) {
-    }
+    private ClienteRepresentation dadosClientes;
 }
