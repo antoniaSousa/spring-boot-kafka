@@ -2,7 +2,6 @@ package io.github.antoniasousa.icompras.pedidos.model;
 
 import io.github.antoniasousa.icompras.pedidos.client.representation.ClienteRepresentation;
 import io.github.antoniasousa.icompras.pedidos.controller.dto.DadosPagamentoDTO;
-import io.github.antoniasousa.icompras.pedidos.publisher.representation.DadosClientesRepresentations;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

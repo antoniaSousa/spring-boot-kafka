@@ -47,7 +47,7 @@ public class PedidoController {
         }
 
     }
-    @PostMapping("{codigo}")
+    @GetMapping("{codigo}")
     public ResponseEntity<DetalhesPedidoRepresentation> obterDetalhesPedido(
             @PathVariable("codigo") Long codigo){
         return service

@@ -5,7 +5,8 @@ import io.github.antoniasousa.icompras.pedidos.publisher.representation.Detalhes
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "string")
+
+@Mapper(componentModel = "spring")
 public interface DetalhePedidoMapper {
 
     /**
@@ -15,7 +16,7 @@ public interface DetalhePedidoMapper {
     @Mapping(source = "codigo", target = "codigo")
     @Mapping(source = "codigoCliente", target = "codigoCliente")
     @Mapping(source = "dadosClientes.nome", target = "nome")
-    @Mapping(source = "dadosClientes.nome", target = "cpf")
+    @Mapping(source = "dadosClientes.cpf", target = "cpf")
     @Mapping(source = "dadosClientes.logradouro", target = "logradouro")
     @Mapping(source = "dadosClientes.numero", target = "numero")
     @Mapping(source = "dadosClientes.bairro", target = "bairro")
