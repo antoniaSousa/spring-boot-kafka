@@ -1,10 +1,17 @@
 package io.github.antoniasousa.icompras.pedidos.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -26,8 +33,21 @@ public class kafkaConfig {
         return new DefaultKafkaProducerFactory<>(props);
     }
     @Bean
-    public KafkaTemplate<String, String> KafkaTemplate(
-            ProducerFactory<String, String> producerFactory){
-        return new KafkaTemplate<>(producerFactory);
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListener(
+            ConsumerFactory<String, String> consumerFackory
+    ){
+        ConcurrentKafkaListenerContainerFactory<String, String> listener
+                = new ConcurrentKafkaListenerContainerFactory<>();
+        listener.setConsumerFactory(consumerFackory);
+        return listener;
     }
+    @Bean
+        public ObjectMapper getObjectMapper() {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new Jdk8Module());
+            mapper.registerModule(new JavaTimeModule());
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            return mapper;
+        }
 }

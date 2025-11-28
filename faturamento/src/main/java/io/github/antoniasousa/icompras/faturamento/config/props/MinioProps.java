@@ -11,7 +11,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Data
 public class MinioProps {
     private String url;
-    private String accessKey;
     private String secretKey;
     private String bucketName;
+
+    public String getAccessKey() {
+    }
 }
